@@ -7,6 +7,7 @@ import {
   IonItemOption,
   IonInput,
 } from '@ionic/react'
+import { useRef, useState } from 'react'
 import { useElectric } from '../context'
 import { Items as Item } from '../generated/client'
 import './ToDoListItem.css'
@@ -18,6 +19,8 @@ interface ToDoListItemProps {
 
 const ToDoListItem: React.FC<ToDoListItemProps> = ({ item }) => {
   const { db } = useElectric()!
+  const titleIsDirty = useRef(false)
+  const [dirtyTitle, setDirtyTitle] = useState(item.title)
 
   const deleteItem = async () => {
     await db.items.delete({
@@ -47,16 +50,21 @@ const ToDoListItem: React.FC<ToDoListItemProps> = ({ item }) => {
         title: event.detail.value,
       },
     })
+    titleIsDirty.current = false
   }
 
-  const debouncedTitleChanged = debounce(titleChanged, 500)
+  const debouncedTitleChanged = debounce((event: CustomEvent) => {
+    titleIsDirty.current = true
+    setDirtyTitle(event.detail.value)
+    titleChanged(event)
+  }, 500)
 
   return (
     <IonItemSliding>
       <IonItem>
         <IonInput
           aria-label="Task Title"
-          value={item.title}
+          value={titleIsDirty.current ? dirtyTitle : item.title}
           onIonInput={debouncedTitleChanged}
           style={{
             textDecoration: item.done === 1 ? 'line-through' : 'none',
