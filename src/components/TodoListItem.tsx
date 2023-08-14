@@ -1,6 +1,5 @@
 import {
   IonItem,
-  IonLabel,
   IonCheckbox,
   IonItemSliding,
   IonItemOptions,

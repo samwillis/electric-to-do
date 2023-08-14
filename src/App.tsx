@@ -4,15 +4,13 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
 import Home from './pages/Home'
 
-import { makeElectricContext, useLiveQuery } from 'electric-sql/react'
 import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 
 import { authToken } from 'electric-sql/auth'
-import { genUUID } from 'electric-sql/utils'
 
-import { Electric, Items as Item, schema } from './generated/client'
+import { Electric, schema } from './generated/client'
 
-import { ElectricProvider, useElectric } from './context'
+import { ElectricProvider } from './context'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'

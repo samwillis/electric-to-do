@@ -1,5 +1,5 @@
 import ToDoListItem from '../components/TodoListItem'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import {
   IonContent,
   IonHeader,
@@ -10,12 +10,8 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  useIonViewWillEnter,
-  IonItem,
-  IonPopover,
-  IonToggle,
 } from '@ionic/react'
-import { addOutline, ellipsisHorizontal } from 'ionicons/icons'
+import { addOutline } from 'ionicons/icons'
 import { useLiveQuery } from 'electric-sql/react'
 import { genUUID } from 'electric-sql/util'
 import { useElectric } from '../context'
@@ -57,20 +53,6 @@ const Home: React.FC = () => {
             </IonButton>
           </IonButtons>
           <IonTitle>Electric To Do</IonTitle>
-          {/* <IonButtons slot="end">
-            <IonButton id="popover-button">
-              <IonIcon slot="icon-only" icon={ellipsisHorizontal}></IonIcon>
-            </IonButton>
-            <IonPopover trigger="popover-button">
-              <IonContent>
-                <IonList>
-                  <IonItem>
-                    <IonToggle color="danger"> Offline </IonToggle>
-                  </IonItem>
-                </IonList>
-              </IonContent>
-            </IonPopover>
-          </IonButtons> */}
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
