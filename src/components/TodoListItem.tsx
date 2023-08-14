@@ -5,47 +5,47 @@ import {
   IonItemSliding,
   IonItemOptions,
   IonItemOption,
-  IonInput
-  } from '@ionic/react';
+  IonInput,
+} from '@ionic/react'
 import { useElectric } from '../context'
 import { Items as Item } from '../generated/client'
-import './ToDoListItem.css';
+import './ToDoListItem.css'
 import debounce from 'lodash.debounce'
 
 interface ToDoListItemProps {
-  item: Item;
+  item: Item
 }
 
 const ToDoListItem: React.FC<ToDoListItemProps> = ({ item }) => {
-  const { db } = useElectric()!;
+  const { db } = useElectric()!
 
   const deleteItem = async () => {
     await db.items.delete({
       where: {
-        id: item.id
-      }
+        id: item.id,
+      },
     })
   }
 
   const doneChanged = async (event: CustomEvent) => {
     await db.items.update({
       where: {
-        id: item.id
+        id: item.id,
       },
       data: {
-        done: event.detail.checked ? 1 : 0
-      }
+        done: event.detail.checked ? 1 : 0,
+      },
     })
   }
 
   const titleChanged = async (event: CustomEvent) => {
     await db.items.update({
       where: {
-        id: item.id
+        id: item.id,
       },
       data: {
-        title: event.detail.value
-      }
+        title: event.detail.value,
+      },
     })
   }
 
@@ -59,7 +59,7 @@ const ToDoListItem: React.FC<ToDoListItemProps> = ({ item }) => {
           value={item.title}
           onIonInput={debouncedTitleChanged}
           style={{
-            textDecoration: item.done === 1 ? 'line-through' : 'none'
+            textDecoration: item.done === 1 ? 'line-through' : 'none',
           }}
         ></IonInput>
         <IonCheckbox
@@ -71,10 +71,12 @@ const ToDoListItem: React.FC<ToDoListItemProps> = ({ item }) => {
         ></IonCheckbox>
       </IonItem>
       <IonItemOptions side="end">
-        <IonItemOption color="danger" onClick={deleteItem}>Delete</IonItemOption>
+        <IonItemOption color="danger" onClick={deleteItem}>
+          Delete
+        </IonItemOption>
       </IonItemOptions>
     </IonItemSliding>
-  );
-};
+  )
+}
 
-export default ToDoListItem;
+export default ToDoListItem

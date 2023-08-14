@@ -1,8 +1,8 @@
-import { Redirect, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import { Redirect, Route } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react'
+import { IonReactRouter } from '@ionic/react-router'
+import Home from './pages/Home'
 
 import { makeElectricContext, useLiveQuery } from 'electric-sql/react'
 import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
@@ -14,29 +14,28 @@ import { Electric, Items as Item, schema } from './generated/client'
 
 import { ElectricProvider, useElectric } from './context'
 
-
 /* Core CSS required for Ionic components to work properly */
-import '@ionic/react/css/core.css';
+import '@ionic/react/css/core.css'
 
 /* Basic CSS for apps built with Ionic */
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/typography.css';
+import '@ionic/react/css/normalize.css'
+import '@ionic/react/css/structure.css'
+import '@ionic/react/css/typography.css'
 
 /* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css';
-import '@ionic/react/css/float-elements.css';
-import '@ionic/react/css/text-alignment.css';
-import '@ionic/react/css/text-transformation.css';
-import '@ionic/react/css/flex-utils.css';
-import '@ionic/react/css/display.css';
+import '@ionic/react/css/padding.css'
+import '@ionic/react/css/float-elements.css'
+import '@ionic/react/css/text-alignment.css'
+import '@ionic/react/css/text-transformation.css'
+import '@ionic/react/css/flex-utils.css'
+import '@ionic/react/css/display.css'
 
 /* Theme variables */
-import './theme/variables.css';
+import './theme/variables.css'
 
 setupIonicReact({
   // mode: 'ios',
-});
+})
 
 /* Setup Electric Auth */
 const localAuthToken = (): Promise<string> => {
@@ -47,7 +46,7 @@ const localAuthToken = (): Promise<string> => {
 }
 
 const App: React.FC = () => {
-  const [ electric, setElectric ] = useState<Electric>()
+  const [electric, setElectric] = useState<Electric>()
 
   useEffect(() => {
     let isMounted = true
@@ -55,8 +54,8 @@ const App: React.FC = () => {
     const init = async () => {
       const config = {
         auth: {
-          token: await localAuthToken()
-        }
+          token: await localAuthToken(),
+        },
       }
 
       const conn = await ElectricDatabase.init('todo.db', '')
@@ -95,7 +94,7 @@ const App: React.FC = () => {
         </IonReactRouter>
       </IonApp>
     </ElectricProvider>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -1,5 +1,5 @@
-import ToDoListItem from '../components/TodoListItem';
-import { useState, useEffect } from 'react';
+import ToDoListItem from '../components/TodoListItem'
+import { useState, useEffect } from 'react'
 import {
   IonContent,
   IonHeader,
@@ -13,29 +13,25 @@ import {
   useIonViewWillEnter,
   IonItem,
   IonPopover,
-  IonToggle
-} from '@ionic/react';
-import {
-  addOutline,
-  ellipsisHorizontal
-} from 'ionicons/icons';
+  IonToggle,
+} from '@ionic/react'
+import { addOutline, ellipsisHorizontal } from 'ionicons/icons'
 import { useLiveQuery } from 'electric-sql/react'
 import { genUUID } from 'electric-sql/util'
 import { useElectric } from '../context'
 import { Items as Item } from '../generated/client'
-import './Home.css';
+import './Home.css'
 
 const Home: React.FC = () => {
-
-  const { db } = useElectric()!;
+  const { db } = useElectric()!
   useEffect(() => void db.items.sync(), [])
 
   const { results } = useLiveQuery(
     db.items.liveMany({
       orderBy: {
-        added: 'desc'
-      }
-    })
+        added: 'desc',
+      },
+    }),
   )
 
   const items: Item[] = results !== undefined ? results : []
@@ -46,8 +42,8 @@ const Home: React.FC = () => {
         id: genUUID(),
         title: 'New Task',
         done: 0, // Electric doesn't support booleans yet
-        added: Math.round(Date.now() / 1000)
-      }
+        added: Math.round(Date.now() / 1000),
+      },
     })
   }
 
@@ -78,14 +74,14 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
         <IonList>
-          {items.map(item => <ToDoListItem key={item.id} item={item} />)}
+          {items.map((item) => (
+            <ToDoListItem key={item.id} item={item} />
+          ))}
         </IonList>
-
       </IonContent>
     </IonPage>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
