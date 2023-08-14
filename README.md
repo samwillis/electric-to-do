@@ -1,6 +1,6 @@
 # An Example ElectricSQL app using React & the Ionic Framework
 
-https://github.com/samwillis/electric-to-do/assets/31130/06adfade-da88-475e-937e-9c91804f6f4a
+https://github.com/samwillis/electric-to-do/assets/31130/27ed3e26-c675-4e6c-bc49-5491b43613ce
 
 Requirements:
 
