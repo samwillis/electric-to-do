@@ -1,8 +1,19 @@
 import { Redirect, Route } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
-import ViewMessage from './pages/ViewMessage';
+
+import { makeElectricContext, useLiveQuery } from 'electric-sql/react'
+import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
+
+import { authToken } from 'electric-sql/auth'
+import { genUUID } from 'electric-sql/utils'
+
+import { Electric, Items as Item, schema } from './generated/client'
+
+import { ElectricProvider, useElectric } from './context'
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -23,24 +34,68 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-setupIonicReact();
+setupIonicReact({
+  // mode: 'ios',
+});
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/" exact={true}>
-          <Redirect to="/home" />
-        </Route>
-        <Route path="/home" exact={true}>
-          <Home />
-        </Route>
-        <Route path="/message/:id">
-           <ViewMessage />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+/* Setup Electric Auth */
+const localAuthToken = (): Promise<string> => {
+  const issuer = 'local-development'
+  const signingKey = 'local-development-key-minimum-32-symbols'
+
+  return authToken(issuer, signingKey)
+}
+
+const App: React.FC = () => {
+  const [ electric, setElectric ] = useState<Electric>()
+
+  useEffect(() => {
+    let isMounted = true
+
+    const init = async () => {
+      const config = {
+        auth: {
+          token: await localAuthToken()
+        }
+      }
+
+      const conn = await ElectricDatabase.init('todo.db', '')
+      const electric = await electrify(conn, schema, config)
+
+      if (!isMounted) {
+        return
+      }
+
+      setElectric(electric)
+    }
+
+    init()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  if (electric === undefined) {
+    return null
+  }
+
+  return (
+    <ElectricProvider db={electric}>
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route path="/" exact={true}>
+              <Redirect to="/home" />
+            </Route>
+            <Route path="/home" exact={true}>
+              <Home />
+            </Route>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+    </ElectricProvider>
+  );
+};
 
 export default App;

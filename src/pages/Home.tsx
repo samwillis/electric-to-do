@@ -1,57 +1,88 @@
-import MessageListItem from '../components/MessageListItem';
-import { useState } from 'react';
-import { Message, getMessages } from '../data/messages';
+import ToDoListItem from '../components/TodoListItem';
+import { useState, useEffect } from 'react';
 import {
   IonContent,
   IonHeader,
   IonList,
   IonPage,
-  IonRefresher,
-  IonRefresherContent,
   IonTitle,
   IonToolbar,
-  useIonViewWillEnter
+  IonButtons,
+  IonButton,
+  IonIcon,
+  useIonViewWillEnter,
+  IonItem,
+  IonPopover,
+  IonToggle
 } from '@ionic/react';
+import {
+  addOutline,
+  ellipsisHorizontal
+} from 'ionicons/icons';
+import { useLiveQuery } from 'electric-sql/react'
+import { genUUID } from 'electric-sql/util'
+import { useElectric } from '../context'
+import { Items as Item } from '../generated/client'
 import './Home.css';
 
 const Home: React.FC = () => {
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { db } = useElectric()!;
+  useEffect(() => void db.items.sync(), [])
 
-  useIonViewWillEnter(() => {
-    const msgs = getMessages();
-    setMessages(msgs);
-  });
+  const { results } = useLiveQuery(
+    db.items.liveMany({
+      orderBy: {
+        added: 'desc'
+      }
+    })
+  )
 
-  const refresh = (e: CustomEvent) => {
-    setTimeout(() => {
-      e.detail.complete();
-    }, 3000);
-  };
+  const items: Item[] = results !== undefined ? results : []
+
+  const addItem = async () => {
+    await db.items.create({
+      data: {
+        id: genUUID(),
+        title: 'New Task',
+        done: 0, // Electric doesn't support booleans yet
+        added: Math.round(Date.now() / 1000)
+      }
+    })
+  }
 
   return (
     <IonPage id="home-page">
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Inbox</IonTitle>
+          <IonButtons slot="start">
+            <IonButton onClick={addItem}>
+              <IonIcon slot="icon-only" icon={addOutline}></IonIcon>
+            </IonButton>
+          </IonButtons>
+          <IonTitle>Electric To Do</IonTitle>
+          {/* <IonButtons slot="end">
+            <IonButton id="popover-button">
+              <IonIcon slot="icon-only" icon={ellipsisHorizontal}></IonIcon>
+            </IonButton>
+            <IonPopover trigger="popover-button">
+              <IonContent>
+                <IonList>
+                  <IonItem>
+                    <IonToggle color="danger"> Offline </IonToggle>
+                  </IonItem>
+                </IonList>
+              </IonContent>
+            </IonPopover>
+          </IonButtons> */}
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonRefresher slot="fixed" onIonRefresh={refresh}>
-          <IonRefresherContent></IonRefresherContent>
-        </IonRefresher>
-
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">
-              Inbox
-            </IonTitle>
-          </IonToolbar>
-        </IonHeader>
 
         <IonList>
-          {messages.map(m => <MessageListItem key={m.id} message={m} />)}
+          {items.map(item => <ToDoListItem key={item.id} item={item} />)}
         </IonList>
+
       </IonContent>
     </IonPage>
   );

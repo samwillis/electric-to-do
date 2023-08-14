@@ -10,6 +10,8 @@
 
 # production
 /build
+/public/wa-sqlite-async.mjs
+/public/wa-sqlite-async.wasm
 
 # misc
 .DS_Store
